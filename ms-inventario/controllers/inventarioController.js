@@ -49,7 +49,7 @@ export const actualizarStock = async (req, res) => {
     const item = await Inventario.findOneAndUpdate(
       filtro,
       { itemNombre, stockActual, stockMinimo, unidadMedida },
-      { new: true, upsert: true, runValidators: true },
+      { returnDocument: 'after', upsert: true, runValidators: true },
     )
 
     res.json(item)

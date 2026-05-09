@@ -22,8 +22,8 @@ const usrSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['player', 'admin'],
-      default: 'player',
+      enum: ['cliente', 'administrador', 'empleado', 'repartidor'],
+      default: 'cliente',
     },
   },
   { timestamps: true },

@@ -1,12 +1,20 @@
 import Pedido from '../models/Pedido.js'
 
+const authHeaders = (req) => {
+  const token = req.headers.authorization
+  return token ? { Authorization: token } : {}
+}
+
 const avisarInventario = async (insumos = []) => {
   if (!insumos.length || !process.env.MS_INVENTARIO_URL) return
 
   try {
     await fetch(`${process.env.MS_INVENTARIO_URL}/api/inventario/descontar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-service-key': process.env.INTERNAL_SERVICE_KEY || '',
+      },
       body: JSON.stringify({ items: insumos }),
     })
   } catch (err) {
@@ -14,16 +22,69 @@ const avisarInventario = async (insumos = []) => {
   }
 }
 
+const traerCarrito = async (usuarioId, req) => {
+  if (!process.env.MS_PRODUCTOS_URL) return null
+
+  const resp = await fetch(`${process.env.MS_PRODUCTOS_URL}/api/carrito/${usuarioId}`, {
+    headers: authHeaders(req),
+  })
+
+  if (!resp.ok) return null
+  return resp.json()
+}
+
+const vaciarCarrito = async (usuarioId, req) => {
+  if (!process.env.MS_PRODUCTOS_URL) return
+
+  try {
+    await fetch(`${process.env.MS_PRODUCTOS_URL}/api/carrito/${usuarioId}`, {
+      method: 'DELETE',
+      headers: authHeaders(req),
+    })
+  } catch (err) {
+    // console.log('no se pudo vaciar carrito', err.message)
+  }
+}
+
+const mapItemsCarrito = (items = []) =>
+  items.map((item) => {
+    const prod = item.productoId
+
+    return {
+      productoId: prod?._id || prod,
+      nombre: prod?.nombre || item.nombre,
+      cantidad: item.cantidad,
+      precioUnitario: prod?.precio || item.precioUnitario || 0,
+    }
+  })
+
 export const crearPedido = async (req, res) => {
   try {
     const { usuarioId, productos = [], total, direccionEnvio, insumos = [] } = req.body
+    const userIdFinal = req.user.role === 'cliente' ? req.user.id : usuarioId
+    let prodsFinal = productos
+    let totalFinal = total
+    let pedidoDesdeCarrito = false
 
-    if (!usuarioId || !productos.length || total == null || !direccionEnvio) {
+    if (!prodsFinal.length) {
+      const carrito = await traerCarrito(userIdFinal, req)
+      prodsFinal = mapItemsCarrito(carrito?.items)
+      totalFinal = carrito?.total
+      pedidoDesdeCarrito = prodsFinal.length > 0
+    }
+
+    if (!userIdFinal || !prodsFinal.length || totalFinal == null || !direccionEnvio) {
       return res.status(400).json({ msg: 'Faltan datos para crear el pedido' })
     }
 
-    const pedido = await Pedido.create({ usuarioId, productos, total, direccionEnvio })
+    const pedido = await Pedido.create({
+      usuarioId: userIdFinal,
+      productos: prodsFinal,
+      total: totalFinal,
+      direccionEnvio,
+    })
     await avisarInventario(insumos)
+    if (pedidoDesdeCarrito) await vaciarCarrito(userIdFinal, req)
 
     res.status(201).json(pedido)
   } catch (err) {
@@ -38,7 +99,7 @@ export const actualizarEstado = async (req, res) => {
     const pedido = await Pedido.findByIdAndUpdate(
       req.params.id,
       { estado },
-      { new: true, runValidators: true },
+      { returnDocument: 'after', runValidators: true },
     )
 
     if (!pedido) {

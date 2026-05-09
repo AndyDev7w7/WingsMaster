@@ -1,6 +1,15 @@
 import Usuario from '../models/Usuario.js'
 import generateToken from '../utils/generateToken.js'
 
+const normalizarRole = (role = 'cliente') => {
+  const mapRoles = {
+    player: 'cliente',
+    admin: 'administrador',
+  }
+
+  return mapRoles[role] || role
+}
+
 export const registrarUsuario = async (req, res) => {
   try {
     const { username, email, password } = req.body
@@ -17,8 +26,8 @@ export const registrarUsuario = async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
-      role: user.role,
-      token: generateToken(user._id),
+      role: normalizarRole(user.role),
+      token: generateToken(user),
     })
   } catch (err) {
     // console.log('registro fail', err)
@@ -36,8 +45,8 @@ export const autenticarUsuario = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
+        role: normalizarRole(user.role),
+        token: generateToken(user),
       })
     }
 

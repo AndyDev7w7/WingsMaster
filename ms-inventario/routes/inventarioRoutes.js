@@ -5,14 +5,14 @@ import {
   obtenerAlertas,
   obtenerInventario,
 } from '../controllers/inventarioController.js'
-import { staffOnly } from '../middleware/roleMiddleware.js'
+import { authorizeRoles, internalOrRoles, protect } from '../middleware/authMiddleware.js'
 
 const router = Router()
 
-router.get('/', obtenerInventario)
-router.get('/alertas', obtenerAlertas)
-router.post('/descontar', descontarStock)
-router.post('/', staffOnly, actualizarStock)
-router.put('/:id', staffOnly, actualizarStock)
+router.get('/', protect, authorizeRoles('administrador', 'empleado'), obtenerInventario)
+router.get('/alertas', protect, authorizeRoles('administrador', 'empleado'), obtenerAlertas)
+router.post('/descontar', internalOrRoles('administrador', 'empleado'), descontarStock)
+router.post('/', protect, authorizeRoles('administrador', 'empleado'), actualizarStock)
+router.put('/:id', protect, authorizeRoles('administrador', 'empleado'), actualizarStock)
 
 export default router
