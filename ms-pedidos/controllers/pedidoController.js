@@ -58,9 +58,55 @@ const mapItemsCarrito = (items = []) =>
     }
   })
 
+const insumosDefault = (productos = []) => {
+  const unidades = productos.reduce((acc, prod) => acc + Number(prod.cantidad || 0), 0)
+
+  return [
+    { itemNombre: 'Alitas', cantidad: Math.max(unidades * 6, 1) },
+    { itemNombre: 'Salsas', cantidad: Math.max(unidades, 1) },
+    { itemNombre: 'Empaques', cantidad: 1 },
+  ]
+}
+
+export const obtenerPedidos = async (req, res) => {
+  try {
+    const pedidos = await Pedido.find().sort({ createdAt: -1 })
+    res.json(pedidos)
+  } catch (err) {
+    res.status(500).json({ msg: 'No se pudieron traer pedidos', error: err.message })
+  }
+}
+
+export const obtenerPedidoPorId = async (req, res) => {
+  try {
+    const pedido = await Pedido.findById(req.params.id)
+
+    if (!pedido) {
+      return res.status(404).json({ msg: 'Pedido no encontrado' })
+    }
+
+    if (req.user.role === 'cliente' && pedido.usuarioId !== req.user.id) {
+      return res.status(403).json({ msg: 'Ese pedido no es tuyo' })
+    }
+
+    res.json(pedido)
+  } catch (err) {
+    res.status(500).json({ msg: 'No se pudo traer el pedido', error: err.message })
+  }
+}
+
 export const crearPedido = async (req, res) => {
   try {
-    const { usuarioId, productos = [], total, direccionEnvio, insumos = [] } = req.body
+    const {
+      usuarioId,
+      cliente,
+      productos = [],
+      total,
+      direccionEnvio,
+      metodoPago,
+      tipo = 'Domicilio',
+      insumos = [],
+    } = req.body
     const userIdFinal = req.user.role === 'cliente' ? req.user.id : usuarioId
     let prodsFinal = productos
     let totalFinal = total
@@ -79,11 +125,14 @@ export const crearPedido = async (req, res) => {
 
     const pedido = await Pedido.create({
       usuarioId: userIdFinal,
+      cliente: cliente || req.user.username || 'Cliente Krunchy',
+      tipo,
       productos: prodsFinal,
       total: totalFinal,
       direccionEnvio,
+      metodoPago,
     })
-    await avisarInventario(insumos)
+    await avisarInventario(insumos.length ? insumos : insumosDefault(prodsFinal))
     if (pedidoDesdeCarrito) await vaciarCarrito(userIdFinal, req)
 
     res.status(201).json(pedido)
@@ -109,6 +158,24 @@ export const actualizarEstado = async (req, res) => {
     res.json(pedido)
   } catch (err) {
     res.status(400).json({ msg: 'No se pudo actualizar el estado', error: err.message })
+  }
+}
+
+export const eliminarPedido = async (req, res) => {
+  try {
+    const pedido = await Pedido.findByIdAndUpdate(
+      req.params.id,
+      { estado: 'Cancelado' },
+      { returnDocument: 'after' },
+    )
+
+    if (!pedido) {
+      return res.status(404).json({ msg: 'Pedido no encontrado' })
+    }
+
+    res.json({ msg: 'Pedido cancelado', pedido })
+  } catch (err) {
+    res.status(500).json({ msg: 'No se pudo cancelar pedido', error: err.message })
   }
 }
 

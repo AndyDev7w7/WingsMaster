@@ -88,6 +88,36 @@ export const eliminarDelCarrito = async (req, res) => {
   }
 }
 
+export const actualizarItemCarrito = async (req, res) => {
+  try {
+    const { usuarioId, productoId } = req.params
+    const { cantidad = 1 } = req.body
+    const cant = Number(cantidad)
+
+    const carrito = await Carrito.findOne({ usuarioId })
+
+    if (!carrito) {
+      return res.status(404).json({ msg: 'Carrito no encontrado' })
+    }
+
+    if (cant <= 0) {
+      carrito.items = carrito.items.filter((item) => idTxt(item.productoId) !== productoId)
+    } else {
+      const item = carrito.items.find((it) => idTxt(it.productoId) === productoId)
+      if (!item) return res.status(404).json({ msg: 'Producto no esta en el carrito' })
+      item.cantidad = cant
+    }
+
+    carrito.total = await recalcularTotal(carrito.items)
+    await carrito.save()
+    await carrito.populate('items.productoId')
+
+    res.json(carrito)
+  } catch (err) {
+    res.status(500).json({ msg: 'No se pudo actualizar el carrito', error: err.message })
+  }
+}
+
 export const limpiarCarrito = async (req, res) => {
   try {
     const { usuarioId } = req.params

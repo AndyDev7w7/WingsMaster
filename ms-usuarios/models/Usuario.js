@@ -20,10 +20,29 @@ const usrSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    nombre: {
+      type: String,
+      trim: true,
+    },
+    telefono: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    direccion: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     role: {
       type: String,
       enum: ['cliente', 'administrador', 'empleado', 'repartidor'],
       default: 'cliente',
+    },
+    estado: {
+      type: String,
+      enum: ['Activo', 'Inactivo'],
+      default: 'Activo',
     },
   },
   { timestamps: true },

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280" role="img" aria-label="Combo de alitas">
+  <defs>
+    <linearGradient id="box" x1="0" x2="1">
+      <stop offset="0" stop-color="#ef4b2d"/>
+      <stop offset="1" stop-color="#9d1717"/>
+    </linearGradient>
+    <radialGradient id="sauce" cx=".45" cy=".35" r=".8">
+      <stop offset="0" stop-color="#ffe1b5"/>
+      <stop offset=".55" stop-color="#c82718"/>
+      <stop offset="1" stop-color="#7c1111"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="205" cy="237" rx="148" ry="18" fill="#781010" opacity=".24"/>
+  <path d="M58 120h245l-36 103H89L58 120Z" fill="url(#box)"/>
+  <path d="M83 92h252l-32 41H58l25-41Z" fill="#ffe8b4"/>
+  <path d="M309 130h49l-45 57h-37l33-57Z" fill="#c52822"/>
+  <g fill="#f29b21" stroke="#c44716" stroke-width="6">
+    <path d="M128 96c-21 14-18 44 5 52 24 8 52-9 50-32-2-24-33-36-55-20Z"/>
+    <path d="M195 88c-25 6-36 33-18 49 18 16 52 12 64-9 12-21-19-47-46-40Z"/>
+    <path d="M248 111c-21 5-31 27-15 41 16 14 45 11 55-7 11-20-17-40-40-34Z"/>
+    <path d="M106 143c-22 8-28 33-10 47 19 15 50 7 57-13 8-21-22-42-47-34Z"/>
+    <path d="M181 143c-24 7-34 32-18 48 17 17 52 13 63-8 12-22-18-49-45-40Z"/>
+  </g>
+  <g>
+    <ellipse cx="323" cy="184" rx="44" ry="28" fill="#fff4df"/>
+    <ellipse cx="323" cy="180" rx="34" ry="18" fill="url(#sauce)"/>
+    <ellipse cx="356" cy="151" rx="38" ry="25" fill="#fff4df"/>
+    <ellipse cx="356" cy="148" rx="29" ry="16" fill="#fbf1db"/>
+    <rect x="302" y="56" width="46" height="108" rx="12" fill="#b51818"/>
+    <rect x="309" y="41" width="32" height="22" rx="6" fill="#f23828"/>
+    <ellipse cx="326" cy="112" rx="23" ry="25" fill="#ffdb63"/>
+    <path d="M309 112c12 7 24 7 35 0" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>

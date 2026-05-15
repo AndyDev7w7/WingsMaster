@@ -32,6 +32,16 @@ const pedidoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    cliente: {
+      type: String,
+      trim: true,
+      default: 'Cliente Krunchy',
+    },
+    tipo: {
+      type: String,
+      enum: ['Domicilio', 'Local'],
+      default: 'Domicilio',
+    },
     productos: [prodPedidoSchema],
     total: {
       type: Number,
@@ -40,13 +50,27 @@ const pedidoSchema = new mongoose.Schema(
     },
     estado: {
       type: String,
-      enum: ['Pendiente', 'Preparando', 'En camino', 'Entregado'],
+      enum: ['Pendiente', 'Preparando', 'Listo', 'Recogido', 'En camino', 'Entregado', 'Cancelado'],
       default: 'Pendiente',
     },
     direccionEnvio: {
       type: String,
       required: true,
       trim: true,
+    },
+    metodoPago: {
+      type: String,
+      trim: true,
+      default: 'Pago en efectivo',
+    },
+    pagado: {
+      type: Boolean,
+      default: false,
+    },
+    repartidor: {
+      type: String,
+      trim: true,
+      default: '',
     },
   },
   { timestamps: true },

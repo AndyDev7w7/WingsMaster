@@ -22,7 +22,7 @@ const prodSchema = new mongoose.Schema(
     },
     categoria: {
       type: String,
-      enum: ['Alitas', 'Combos', 'Acompañantes', 'Bebidas', 'Salsas'],
+      enum: ['Alitas', 'Combos', 'Acompañantes', 'Bebidas', 'Salsas', 'Promociones'],
     },
     disponible: {
       type: Boolean,

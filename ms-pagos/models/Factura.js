@@ -3,9 +3,19 @@ import mongoose from 'mongoose'
 const facturaSchema = new mongoose.Schema(
   {
     pedidoId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Pedido',
+      type: String,
       required: true,
+      trim: true,
+    },
+    usuarioId: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    cliente: {
+      type: String,
+      trim: true,
+      default: 'Cliente Krunchy',
     },
     monto: {
       type: Number,
@@ -16,6 +26,16 @@ const facturaSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    estado: {
+      type: String,
+      enum: ['Pendiente', 'Completado', 'Anulado'],
+      default: 'Completado',
+    },
+    refPago: {
+      type: String,
+      trim: true,
+      default: '',
     },
     fecha: {
       type: Date,

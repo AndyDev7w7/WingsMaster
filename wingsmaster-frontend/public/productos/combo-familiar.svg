@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360">
+  <rect width="720" height="360" fill="#fff4dc"/>
+  <path d="M80 96h382l74 170H128z" fill="#bf2019"/>
+  <path d="M104 72h338l20 24H80z" fill="#ffe5bf"/>
+  <g fill="#f79b1b" stroke="#c84517" stroke-width="9">
+    <circle cx="172" cy="132" r="42"/><circle cx="238" cy="122" r="46"/><circle cx="312" cy="132" r="42"/>
+    <circle cx="386" cy="146" r="43"/><circle cx="206" cy="204" r="48"/><circle cx="286" cy="210" r="52"/>
+    <circle cx="372" cy="214" r="46"/>
+  </g>
+  <g transform="translate(520 86)">
+    <rect x="32" y="34" width="70" height="150" rx="26" fill="#cf241e"/>
+    <ellipse cx="67" cy="122" rx="64" ry="30" fill="#fff8e7"/>
+    <path d="M29 112c25 25 51 25 76 0v25c-26 23-51 23-76 0z" fill="#ffd24c"/>
+    <rect x="44" y="0" width="46" height="44" rx="10" fill="#ff382d"/>
+  </g>
+  <text x="112" y="318" fill="#8d1718" font-family="Arial" font-size="34" font-weight="900">Combo familiar</text>
+</svg>

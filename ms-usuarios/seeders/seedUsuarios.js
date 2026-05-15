@@ -7,24 +7,28 @@ dotenv.config()
 const usersSeed = [
   {
     username: 'admin_krunchy',
+    nombre: 'Carlos Perez',
     email: 'admin@krunchy.local',
     password: 'Wings12345',
     role: 'administrador',
   },
   {
     username: 'empleado_caja',
+    nombre: 'Roberto Vargas',
     email: 'empleado@krunchy.local',
     password: 'Wings12345',
     role: 'empleado',
   },
   {
     username: 'repartidor_krunchy',
+    nombre: 'Carla Rodriguez',
     email: 'repartidor@krunchy.local',
     password: 'Wings12345',
     role: 'repartidor',
   },
   {
     username: 'cliente_demo',
+    nombre: 'Laura Gomez',
     email: 'cliente@krunchy.local',
     password: 'Wings12345',
     role: 'cliente',
